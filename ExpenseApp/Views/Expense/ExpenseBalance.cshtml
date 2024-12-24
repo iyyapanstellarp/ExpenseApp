@@ -1,0 +1,56 @@
+﻿@model ExpenseMemberMasterModel
+@using System.Data
+@using NonFactors.Mvc.Grid
+@{
+    ViewData["Title"] = "ExpenseMemberMaster";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="GetReports" asp-controller="Expense" method="post">
+    <div class="form-floating form-floating-outline mb-4">
+        @{
+            // Get the groupid data from ViewData and create SelectListItems
+            var groupid = ((IEnumerable<ExpenseGroupModel>)ViewData["groupid"])
+            .Select(m => new SelectListItem
+            {
+                Value = m.GroupName, // Assuming GroupName is a string
+                Text = $"{m.GroupName}"
+            });
+        }
+
+        @Html.DropDownListFor(model => model.Groupname, groupid, "Select Group",
+                 new { @class = "form-control", @required = "required" })
+        <label asp-for="Groupname" class="control-label">Group Name</label>
+        <span asp-validation-for="Groupname" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Get</button>
+</form>
+
+@if (ViewData["balancetable"] != null)
+{
+    var balanceTable = (DataTable)ViewData["balancetable"];
+    <h2>Balance Table</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                @foreach (DataColumn column in balanceTable.Columns)
+                {
+                    <th>@column.ColumnName</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (DataRow row in balanceTable.Rows)
+            {
+                <tr>
+                    @foreach (var item in row.ItemArray)
+                    {
+                        <td>@item</td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}

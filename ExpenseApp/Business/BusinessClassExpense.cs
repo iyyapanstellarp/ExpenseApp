@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using ExpenseApp.Context;
 using ExpenseApp.Models;
 using System.Data;
+using System.Data.Common;
 
 
 namespace ExpenseApp.Business
@@ -47,6 +48,40 @@ namespace ExpenseApp.Business
 
             return dataTable;
         }
+
+
+        public static DataTable DataTable(DbContext context, string sqlQuery, Dictionary<string, object> parameters)
+        {
+            DataTable dataTable = new DataTable();
+            using (var connection = context.Database.GetDbConnection() as SqlConnection)
+            {
+                if (connection != null)
+                {
+                    connection.Open();
+                    using (var command = new SqlCommand(sqlQuery, connection))
+                    {
+                        // Add parameters to the command
+                        if (parameters != null)
+                        {
+                            foreach (var param in parameters)
+                            {
+                                command.Parameters.AddWithValue(param.Key, param.Value);
+                            }
+                        }
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if (reader.HasRows)
+                            {
+                                dataTable.Load(reader);
+                            }
+                        }
+                    }
+                }
+            }
+            return dataTable;
+        }
+
 
     }
 }

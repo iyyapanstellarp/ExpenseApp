@@ -305,7 +305,50 @@ namespace ExpenseApp.Controllers
             return View();
         }
 
-       
+        public IActionResult ExpenseBalance()
+        {
+            BusinessClassExpense business = new BusinessClassExpense(_billingContext, _configuration);
+
+            ViewData["groupid"] = business.GetGroupid();
+
+
+            return View();
+        }
+
+        public IActionResult GetReports(ExpenseGroupModel model, string GroupBy)
+        {
+            BusinessClassExpense business = new BusinessClassExpense(_billingContext, _configuration);
+
+            ViewData["groupid"] = business.GetGroupid();
+
+            // Define the SQL query with a parameter placeholder
+            var reportQuery = "select Membersname, Contributionamaount, '' as percentage, '' as balance " +
+                              "from EXPmembermaster where Groupname = @GroupName";
+
+            if (string.IsNullOrEmpty(model.GroupName))
+            {
+                ViewBag.Message = "Group Name is required.";
+                return View("ExpenseBalance");
+            }
+
+            // Use parameterized query to prevent SQL injection
+            var query = BusinessClassExpense.DataTable(_billingContext, reportQuery, new Dictionary<string, object>
+    {
+        { "@GroupName", model.GroupName }
+    });
+
+            if (query.Rows.Count == 0)
+            {
+                ViewBag.Message = "No records found for the specified Group Name.";
+                return View("Reports");
+            }
+
+            ViewData["balancetable"] = query;
+
+            return View("ExpenseBalance");
+        }
+
+
 
     }
 }
