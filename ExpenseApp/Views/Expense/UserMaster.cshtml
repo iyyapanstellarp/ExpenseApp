@@ -1,0 +1,58 @@
+﻿@model UserMaster
+
+@{
+    ViewData["Title"] = "UserMaster";
+   // Layout = "~/Views/Shared/_ContentNavbarLayout.cshtml";
+}
+
+<div class="container mt-4">
+    <form asp-action="UpdateUser" asp-controller="Expense" method="post" class="needs-validation">
+        <div class="form-group">
+            <label asp-for="Username" class="form-label">Username</label>
+            <input asp-for="Username" placeholder="Enter Username" class="form-control" readonly />
+            <span asp-validation-for="Username" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Password" class="form-label">Password</label>
+            <input asp-for="Password" id="password" placeholder="Enter Password" class="form-control" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="confirmpassword" class="form-label">Confirm Password</label>
+            <input type="password" id="confirmpassword" placeholder="Confirm Password" class="form-control"
+                   onblur="checkPasswordMatch()" />
+            <span id="password-match-error" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Mobilenumber" class="form-label">Mobile Number</label>
+            <input asp-for="Mobilenumber" placeholder="Enter Mobile Number" class="form-control" />
+            <span asp-validation-for="Mobilenumber" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Save</button>
+
+        @if (ViewBag.Message != null)
+        {
+            <div class="alert alert-info mt-3">
+                @ViewBag.Message
+            </div>
+        }
+    </form>
+</div>
+
+<script>
+    function checkPasswordMatch() {
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmpassword').value;
+        const errorSpan = document.getElementById('password-match-error');
+
+        if (password !== confirmPassword) {
+            errorSpan.textContent = 'Password and Confirm Password do not match.';
+        } else {
+            errorSpan.textContent = '';
+        }
+    }
+</script>

@@ -1,0 +1,141 @@
+﻿@model ExpenseApp.Models.UserMaster
+
+@{
+    ViewData["Title"] = "Login";
+    //Layout = "~/Views/Shared/_BlankLayout.cshtml";
+}
+
+
+
+<div class="container-xxl">
+    <div class="authentication-wrapper authentication-basic container-p-y">
+        <div class="authentication-inner">
+            <!-- Login/Register Card -->
+            <div class="card">
+                <div class="card-body">
+                    <!-- Logo -->
+                    <div class="app-brand justify-content-center">
+                        <a href="/" class="app-brand-link gap-2">
+                            <center>
+                                <h2>
+                                    <span style="font-weight: bold; font-size: 30px;color:#fff ">Expense</span>
+                                </h2>
+                            </center>
+                        </a>
+                    </div>
+                    <!-- /Logo -->
+                    <!-- Login Form -->
+                    <div id="loginForm">
+                        <form id="formAuthentication" class="mb-3" action="~/" method="POST">
+                            <div class="mb-3" style="margin-top:20px">
+                                <label asp-for="Username" class="form-label">Username</label>
+                                <input type="text" asp-for="Username" class="form-control" id="Username" name="Username" placeholder="Enter your email or username" autofocus required>
+                            </div>
+                            <div class="mb-3 form-password-toggle" style="margin-top:20px">
+                                <div class="d-flex justify-content-between">
+                                    <label class="form-label" for="password">Password</label>
+                                </div>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="Password" type="password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" required />
+                                    <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                                </div>
+                            </div>
+                            <div class="mb-3" style="margin-top:20px">
+                                <center>
+                                    <button class="btn btn-primarywhite mx-2" asp-action="ExpenseLogin" type="submit">Sign in</button>
+                                    @if (ViewBag.Message != null)
+                                    {
+                                        <div class="alert alert-danger">
+                                            @ViewBag.Message
+                                        </div>
+                                    }
+                                </center>
+                            </div>
+                        </form>
+                        <center>
+                            <a href="javascript:void(0);" onclick="toggleForms('register')">Don't have an account? Register</a>
+                        </center>
+                    </div>
+                    <!-- /Login Form -->
+                    <!-- Register Form -->
+                    <div id="registerForm" style="display:none;">
+                        <hr>
+                        <h4 class="text-center">Or, Create a New Account</h4>
+                        <form id="formRegister" class="mb-3" action="~/" method="POST">
+                            <div class="mb-3" style="margin-top:20px">
+                                <label asp-for="Username" class="form-label">Username</label>
+                                <input type="text" asp-for="Username" class="form-control" id="Username" name="Username" placeholder="Enter your email or username" autofocus required>
+                            </div>
+                            <div class="mb-3" style="margin-top:20px">
+                                <label asp-for="Password" class="form-label">Password</label>
+                                <input asp-for="Password" type="password" id="password" placeholder="Enter Password"  class="form-control"  />
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3" style="margin-top:20px">
+                                <label for="confirmpassword" class="form-label">Confirm Password</label>
+                                <input type="password" id="confirmpassword" placeholder="Confirm Password" class="form-control"
+                                       onblur="checkPasswordMatch()" />
+                                <span id="password-match-error" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3" style="margin-top:20px">
+                                <label asp-for="Mobilenumber" class="form-label">Mobile Number</label>
+                                <input type="text" asp-for="Mobilenumber" class="form-control" id="MobileNumber" name="MobileNumber" placeholder="Enter your mobile number" required>
+                            </div>
+                            <div class="mb-3" style="margin-top:20px">
+                                <center>
+                                    <button class="btn btn-primarywhite mx-2" asp-action="ExpenseRegister" type="submit">Register</button>
+                                </center>
+                            </div>
+                        </form>
+                        <center>
+                            <a href="javascript:void(0);" onclick="toggleForms('login')">Already have an account? Login</a>
+                        </center>
+                    </div>
+                    <!-- /Register Form -->
+
+                </div>
+            </div>
+         
+        </div>
+    </div>
+</div>
+
+
+@if (ViewBag.Message != null)
+{
+    <div>
+        @ViewBag.Message;
+    </div>
+}
+
+<script>
+    function checkPasswordMatch() {
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmpassword').value;
+        const errorSpan = document.getElementById('password-match-error');
+
+
+        if (password === confirmPassword) {
+            errorSpan.textContent = ''; // Clear the error message
+        } else {
+            errorSpan.textContent = 'Password and Confirm Password do not match.'; // Show the error message
+        }
+    }
+</script>
+
+
+
+
+    <script>
+        // Toggle between Login and Register forms
+        function toggleForms(formType) {
+            if (formType === 'register') {
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('registerForm').style.display = 'block';
+            } else {
+                document.getElementById('loginForm').style.display = 'block';
+                document.getElementById('registerForm').style.display = 'none';
+            }
+        }
+    </script>
+

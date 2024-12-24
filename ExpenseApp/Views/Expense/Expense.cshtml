@@ -1,0 +1,266 @@
+﻿@model ExpenseModel
+
+@{
+    ViewData["Title"] = "ExpenseModel";
+    //Layout = "~/Views/Shared/_ContentNavbarLayout.cshtml";
+}
+
+<form asp-action="addexpense" asp-controller="Expense">
+
+    <div class="form-group">
+        <label asp-for="ExpenseName" class="form-label">Expense Name</label>
+        <input asp-for="ExpenseName" id="ExpenseName" placeholder="Expense Name" class="form-control" readonly />
+        <span asp-validation-for="ExpenseName" class="text-danger"></span>
+        <button class="btn btn-primary menu-icon tf-icons bx bx-cart-add" type="button" id="button-addon2" data-bs-toggle="modal" data-bs-target="#modalCenter"></button>
+    </div>
+
+
+    <div class="input-group">
+        @{
+            var GroupID = ((IEnumerable<ExpenseGroupModel>)ViewData["groupid"])
+            .Select(m => new SelectListItem
+            {
+                Value = m.GroupName.ToString(),
+                Text = $"{m.GroupName}"
+            });
+        }
+
+
+        <input type="text" id="groupDropdownInput" class="form-control" placeholder="Group Name" onkeyup="filterDropdown(event, 'groupDropdownInput', 'groupDropdown')" onclick="showDropdown('groupDropdown')">
+        <ul id="groupDropdown" class="list-group mt-2"
+            style="display: none; position: absolute; top: 100%; left: 0; width: 100%; max-height: 200px; overflow-y: auto; background-color: white; border: 1px solid #ddd; border-radius: .25rem; box-shadow: 0 0 .5rem rgba(0, 0, 0, .1); z-index: 1000; padding: 0; margin: 0; list-style-type: none;">
+            @foreach (var item in GroupID)
+            {
+                <li class="list-group-item" data-value="@item.Value" onclick="selectDropdownItem('groupDropdownInput', 'groupID', '@item.Text', '@item.Value')"
+                    style="padding: .5rem 1rem; cursor: pointer; background-color: white; border: none; list-style-type: none;">
+                    @item.Text
+                </li>
+            }
+        </ul>
+        <input type="hidden" name="GroupID" id="groupID" value="GroupID" />
+
+       
+
+    </div>
+
+
+    <div class="form-group">
+        <label asp-for="Spent" class="form-label">spent</label>
+        <input asp-for="Spent" class="form-control" placeholder="Spent"  />
+        <span asp-validation-for="Spent" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Save</button>
+
+    @if (ViewBag.Message != null)
+    {
+        <div class="alert alert-info mt-3">
+            @ViewBag.Message
+        </div>
+    }
+
+</form>
+
+
+<!-- Expense Modal -->
+<div class="modal fade" id="modalCenter" tabindex="-1" aria-labelledby="modalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalCenterTitle">Expense Type</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="modalSearchForm" asp-controller="Expense" asp-action="AddExpensePop" method="post">
+                    <div class="col mb-3">
+                        <label for="ExpenseNameMas">Expense Name</label>
+                        <input type="text" class="form-control" id="ExpenseNameMas" name="ExpenseNameMas" placeholder="Expense Name" />
+                    </div>
+                    <div class="col mb-3">
+                        <label for="Type">Type</label>
+                        <input type="text" class="form-control" id="Type" name="Type" placeholder="Type" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveButton">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Modal Script for Expense -->
+<script>
+    $(document).ready(function () {
+        $('#saveButton').on('click', function () {
+            // Ensure modal has finished rendering and input values are available
+            setTimeout(function () {
+                var expenseName = $('#ExpenseNameMas').val().trim();
+                var type = $('#Type').val().trim();
+
+                // Log the values for debugging
+                console.log('ExpenseNameMas:', expenseName);
+                console.log('Type:', type);
+
+                // Check if fields are empty
+                if (!expenseName || !type) {
+                    alert('Please fill all the fields.');
+                    return;
+                }
+
+                // Perform AJAX request to save the data
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("AddExpensePop", "Expense")',
+                    data: {
+                        expenseName: expenseName,
+                        type: type
+                    },
+                    success: function (result) {
+                        // Set the value of the form input before closing the modal
+                        $('#ExpenseName').val(expenseName); // This sets the value of the ExpenseName input field in the form
+
+                        // Close the modal after the value is updated
+                        $('#modalCenter').modal('hide');
+
+                        alert('Expense saved successfully!');
+                    },
+                    error: function (error) {
+                        console.error('Error:', error);
+                        alert('Error occurred while saving the expense.');
+                    }
+                });
+            }, 100);  // Delay the execution by 100ms to ensure modal inputs are ready
+        });
+
+        // Clear input fields when the modal is shown
+        $('#modalCenter').on('show.bs.modal', function () {
+            $('#ExpenseNameMas').val('');
+            $('#Type').val('');
+        });
+    });
+</script>
+
+
+
+
+
+<script>
+    let suppressInputEvent = false;
+
+    function filterDropdown(event, inputId, dropdownId) {
+        if (suppressInputEvent) return; // Prevent filtering if input event is suppressed
+
+        const input = document.getElementById(inputId);
+        const dropdown = document.getElementById(dropdownId);
+        const filter = input.value.toLowerCase();
+        const items = dropdown.querySelectorAll('li');
+
+        items.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            item.style.display = text.includes(filter) ? '' : 'none';
+        });
+
+        if (filter) {
+            dropdown.style.display = 'block'; // Show dropdown when filtering
+        }
+    }
+
+    function showDropdown(dropdownId) {
+        const dropdown = document.getElementById(dropdownId);
+        dropdown.style.display = 'block';
+    }
+
+    function selectDropdownItem(inputId, hiddenId, text, value) {
+        const input = document.getElementById(inputId);
+        const hidden = document.getElementById(hiddenId);
+        const dropdown = document.getElementById('groupDropdown');
+
+        // Trim whitespace from the selected text
+        const trimmedText = text.trim();
+
+        // Set the selected value in the input and hidden input
+        input.value = trimmedText;
+        hidden.value = value;
+
+        // Hide the dropdown after selection
+        dropdown.style.display = 'none';
+
+        // Set the flag to suppress the input event momentarily
+        suppressInputEvent = true;
+
+        // Remove suppression after a short delay to allow normal input behavior again
+        setTimeout(() => {
+            suppressInputEvent = false;
+        }, 200);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const input = document.getElementById('groupDropdownInput');
+        const dropdown = document.getElementById('groupDropdown');
+
+        let highlightedIndex = -1;
+
+        function getVisibleItems() {
+            return Array.from(dropdown.querySelectorAll('li')).filter(item => item.style.display !== 'none');
+        }
+
+        input.addEventListener('input', (event) => {
+            filterDropdown(event, 'groupDropdownInput', 'groupDropdown');
+            highlightedIndex = -1; // Reset highlight when input changes
+        });
+
+        input.addEventListener('keydown', (event) => {
+            const visibleItems = getVisibleItems();
+
+            switch (event.key) {
+                case 'ArrowDown':
+                    if (highlightedIndex < visibleItems.length - 1) {
+                        highlightedIndex++;
+                        updateHighlight(visibleItems);
+                        event.preventDefault(); // Prevent default behavior
+                    }
+                    break;
+                case 'ArrowUp':
+                    if (highlightedIndex > 0) {
+                        highlightedIndex--;
+                        updateHighlight(visibleItems);
+                        event.preventDefault(); // Prevent default behavior
+                    }
+                    break;
+                case 'Enter':
+                    if (highlightedIndex >= 0) {
+                        const item = visibleItems[highlightedIndex];
+                        selectDropdownItem('groupDropdownInput', 'groupID', item.textContent, item.getAttribute('data-value'));
+                        highlightedIndex = -1;
+                        event.preventDefault(); // Prevent default behavior
+                    }
+                    break;
+                case 'Escape':
+                    dropdown.style.display = 'none'; // Close dropdown on escape
+                    highlightedIndex = -1;
+                    break;
+            }
+        });
+
+        function updateHighlight(visibleItems) {
+            visibleItems.forEach((item, index) => {
+                item.style.backgroundColor = (index === highlightedIndex) ? '#000000' : 'white';
+                item.style.color = (index === highlightedIndex) ? 'white' : 'black'; // Ensure text color contrasts with background
+            });
+            visibleItems[highlightedIndex]?.scrollIntoView({ block: 'nearest' });
+        }
+
+        // Click event to close dropdown when clicking outside
+        document.addEventListener('click', (event) => {
+            const target = event.target;
+            if (!dropdown.contains(target) && target !== input) {
+                dropdown.style.display = 'none';
+            }
+        });
+    });
+</script>

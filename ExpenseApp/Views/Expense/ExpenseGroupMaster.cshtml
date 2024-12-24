@@ -1,0 +1,39 @@
+﻿@model ExpenseGroupModel
+
+@{
+    ViewData["Title"] = "ExpenseGroup";
+   // Layout = "~/Views/Shared/_ContentNavbarLayout.cshtml";
+}
+
+<form asp-action="Addgroup" asp-controller="Expense">
+
+    <div>
+        <input asp-for="GroupName" placeholder="GroupName" name="GroupName" class="form-control"/>
+        <label asp-for="GroupName" class="form-control"></label>
+        <span asp-validation-for="GroupName" class="text-danger"></span>
+     </div>
+
+    <div>
+        <input asp-for="Budget" placeholder="Budget" name="Budget" class="form-control" />
+        <label asp-for="Budget" class="form-control"></label>
+        <span asp-validation-for="Budget" class="text-danger"></span>
+    </div>
+
+    <div class="form-floating form-floating-outline mb-4">
+        <label>Is Active?</label><br>
+        <input type="radio" asp-for="Active" value="true" id="Yes" checked /> <label for="Yes">Yes</label>
+        <input type="radio" asp-for="Active" value="false" id="No" /> <label for="No">No</label>
+    </div>
+
+
+    <button type="submit" value="Save" name="buttontype" class="btn btn-primary mx-2">Save</button>
+
+
+    @if (ViewBag.Message != null)
+    {
+        <div>
+            @ViewBag.Message;
+        </div>
+    }
+
+</form>
