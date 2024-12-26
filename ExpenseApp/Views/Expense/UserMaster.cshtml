@@ -5,34 +5,65 @@
    // Layout = "~/Views/Shared/_ContentNavbarLayout.cshtml";
 }
 
-<div class="container mt-4">
+
+
     <form asp-action="UpdateUser" asp-controller="Expense" method="post" class="needs-validation">
-        <div class="form-group">
+
+<div class="row">
+
+    <div class="col-md-3">
+    </div>
+
+
+    <div class="col-md-6">
+        <div class="card" style="margin-top: 60px">
+            <div class="card-body">
+
+                <div class="app-brand justify-content-center">
+                    <a href="/" class="app-brand-link gap-2">
+                        <center>
+                            <h2>
+                                User Master
+                            </h2>
+                        </center>
+                    </a>
+                </div>
+                       
+
+
+                    <div class="mb-3" style="margin-top:20px">
             <label asp-for="Username" class="form-label">Username</label>
             <input asp-for="Username" placeholder="Enter Username" class="form-control" readonly />
-            <span asp-validation-for="Username" class="text-danger"></span>
+          
         </div>
 
-        <div class="form-group">
+                    <div class="mb-3" style="margin-top:20px">
             <label asp-for="Password" class="form-label">Password</label>
             <input asp-for="Password" id="password" placeholder="Enter Password" class="form-control" />
-            <span asp-validation-for="Password" class="text-danger"></span>
+
         </div>
 
-        <div class="form-group">
+                    <div class="mb-3" style="margin-top:20px">
             <label for="confirmpassword" class="form-label">Confirm Password</label>
             <input type="password" id="confirmpassword" placeholder="Confirm Password" class="form-control"
                    onblur="checkPasswordMatch()" />
-            <span id="password-match-error" class="text-danger"></span>
+          
         </div>
 
-        <div class="form-group">
+                    <div class="mb-3" style="margin-top:20px">
             <label asp-for="Mobilenumber" class="form-label">Mobile Number</label>
             <input asp-for="Mobilenumber" placeholder="Enter Mobile Number" class="form-control" />
-            <span asp-validation-for="Mobilenumber" class="text-danger"></span>
+           
         </div>
 
-        <button type="submit" class="btn btn-primary mt-3">Save</button>
+                    <div class="mb-3" style="margin-top:20px">
+                        <center>
+                            <button type="submit" value="Save" name="buttontype" class="btn btn-primary">Save</button>
+                        </center>
+                    </div>
+
+
+       
 
         @if (ViewBag.Message != null)
         {
@@ -40,8 +71,19 @@
                 @ViewBag.Message
             </div>
         }
-    </form>
+
+
+                </div>
+
+                </div>
+                </div>
+        <div class="col-md-3">
+        </div>
 </div>
+
+
+    </form>
+
 
 <script>
     function checkPasswordMatch() {

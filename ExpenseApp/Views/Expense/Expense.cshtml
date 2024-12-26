@@ -7,39 +7,75 @@
 
 <form asp-action="addexpense" asp-controller="Expense">
 
-    <div class="form-group">
-        <label asp-for="ExpenseName" class="form-label">Expense Name</label>
-        <input asp-for="ExpenseName" id="ExpenseName" placeholder="Expense Name" class="form-control" readonly />
-        <span asp-validation-for="ExpenseName" class="text-danger"></span>
-        <button class="btn btn-primary menu-icon tf-icons bx bx-cart-add" type="button" id="button-addon2" data-bs-toggle="modal" data-bs-target="#modalCenter"></button>
-    </div>
 
 
-    <div class="input-group">
-        @{
-            var GroupID = ((IEnumerable<ExpenseGroupModel>)ViewData["groupid"])
-            .Select(m => new SelectListItem
+    <div class="row">
+
+        <div class="col-md-3">
+        </div>
+
+
+        <div class="col-md-6">
+            <div class="card" style="margin-top: 60px">
+                <div class="card-body">
+                    <div class="app-brand justify-content-center">
+                        <a href="/" class="app-brand-link gap-2">
+                            <center>
+                                <h2>
+                                    Expense
+                                </h2>
+                            </center>
+                        </a>
+                    </div>
+
+                
+
+                    <div class="mb-3" style="margin-top:20px">
+                        <label asp-for="GroupName" class="form-label">GroupName</label>
+                        <input asp-for="GroupName" class="form-control" placeholder="GroupName" name="GroupName" />
+
+                    </div>
+
+
+                    <div class="mb-3" style="margin-top: 20px">
+                        <label asp-for="ExpenseName" class="form-label">Expense Name</label>
+                        <input asp-for="ExpenseName" id="ExpenseName" placeholder="Expense Name" class="form-control" readonly />
+
+                    </div>
+                    <div class="mb-3" style="margin-top:20px">
+                        <button class="btn btn-primary mt-3" type="button" id="button-addon2" data-bs-toggle="modal" data-bs-target="#modalCenter">Add</button>
+
+                    </div>
+
+                  
+            
+                    <div class="mb-3" style="margin-top: 20px">
+
+                        <label asp-for="GroupName" class="form-label">GroupName</label>
+                        @{
+                            var GroupID = ((IEnumerable<ExpenseGroupModel>)ViewData["groupid"])
+                            .Select(m => new SelectListItem
             {
                 Value = m.GroupName.ToString(),
                 Text = $"{m.GroupName}"
             });
-        }
+                        }
 
 
-        <input type="text" id="groupDropdownInput" class="form-control" placeholder="Group Name" onkeyup="filterDropdown(event, 'groupDropdownInput', 'groupDropdown')" onclick="showDropdown('groupDropdown')">
-        <ul id="groupDropdown" class="list-group mt-2"
-            style="display: none; position: absolute; top: 100%; left: 0; width: 100%; max-height: 200px; overflow-y: auto; background-color: white; border: 1px solid #ddd; border-radius: .25rem; box-shadow: 0 0 .5rem rgba(0, 0, 0, .1); z-index: 1000; padding: 0; margin: 0; list-style-type: none;">
-            @foreach (var item in GroupID)
-            {
-                <li class="list-group-item" data-value="@item.Value" onclick="selectDropdownItem('groupDropdownInput', 'groupID', '@item.Text', '@item.Value')"
-                    style="padding: .5rem 1rem; cursor: pointer; background-color: white; border: none; list-style-type: none;">
-                    @item.Text
-                </li>
-            }
-        </ul>
-        <input type="hidden" name="GroupID" id="groupID" value="GroupID" />
+                        <input type="text" id="groupDropdownInput" class="form-control" placeholder="Group Name" onkeyup="filterDropdown(event, 'groupDropdownInput', 'groupDropdown')" onclick="showDropdown('groupDropdown')">
+                        <ul id="groupDropdown" class="list-group mt-2"
+                            style="display: none; position: absolute; top: 100%; left: 0; width: 100%; max-height: 200px; overflow-y: auto; background-color: white; border: 1px solid #ddd; border-radius: .25rem; box-shadow: 0 0 .5rem rgba(0, 0, 0, .1); z-index: 1000; padding: 0; margin: 0; list-style-type: none;">
+                            @foreach (var item in GroupID)
+                            {
+                                <li class="list-group-item" data-value="@item.Value" onclick="selectDropdownItem('groupDropdownInput', 'groupID', '@item.Text', '@item.Value')"
+                                    style="padding: .5rem 1rem; cursor: pointer; background-color: white; border: none; list-style-type: none;">
+                                    @item.Text
+                                </li>
+                            }
+                        </ul>
+                        <input type="hidden" name="GroupID" id="groupID" value="GroupID" />
 
-       
+
 
     </div>
 
@@ -50,40 +86,56 @@
         <span asp-validation-for="Spent" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary mt-3">Save</button>
+                    <div class="mb-3" style="margin-top:20px">
+                        <center>
+                            <button type="submit" class="btn btn-primary mt-3">Save</button>
+                        </center>
+                    </div>
 
-    @if (ViewBag.Message != null)
-    {
-        <div class="alert alert-info mt-3">
-            @ViewBag.Message
+
+                   
+
+                    @if (ViewBag.Message != null)
+                    {
+                        <div class="alert alert-info mt-3">
+                            @ViewBag.Message
+                        </div>
+                    }
+
+                </div>
+</div>
+</div>
+        <div class="col-md-3">
         </div>
-    }
+</div>
+
+
 
 </form>
 
 
 <!-- Expense Modal -->
 <div class="modal fade" id="modalCenter" tabindex="-1" aria-labelledby="modalCenterTitle" aria-hidden="true">
-    <!-- Modal container that centers the modal on the screen -->
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
+
+
             <!-- Modal content container -->
             <div class="modal-header">
+                <center>
+                    <h5 class="modal-title" id="modalCenterTitle" style="color:blue">Expense Type</h5>
+                </center>
                 <!-- Header section of the modal -->
                 <h5 class="modal-title" id="modalCenterTitle">Expense Type</h5> <!-- Modal title -->
                 <!-- Close button to dismiss the modal -->
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <!-- Body section of the modal -->
-                <!-- Form to capture expense details -->
                 <form id="modalSearchForm" asp-controller="Expense" asp-action="AddExpensePop" method="post">
-                    <!-- Input field for Expense Name -->
                     <div class="col mb-3">
                         <label for="ExpenseNameMas">Expense Name</label>
                         <input type="text" class="form-control" id="ExpenseNameMas" name="ExpenseNameMas" placeholder="Expense Name" />
                     </div>
-                    <!-- Input field for Type -->
                     <div class="col mb-3">
                         <label for="Type">Type</label>
                         <input type="text" class="form-control" id="Type" name="Type" placeholder="Type" />
@@ -91,6 +143,7 @@
                 </form>
             </div>
             <div class="modal-footer">
+
                 <!-- Footer section of the modal -->
                 <!-- Button to close the modal -->
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -101,8 +154,11 @@
     </div>
 </div>
 
+
+
 <!-- Include jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery library for DOM manipulation and AJAX -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <!-- Modal Script for Expense -->
 <script>
     $(document).ready(function () {
