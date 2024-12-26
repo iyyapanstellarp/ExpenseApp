@@ -14,6 +14,7 @@ using System.Web;
 
 namespace ExpenseApp.Controllers
 {
+    [Authorize]
     public class ExpenseController : Controller
     {
 
