@@ -2,38 +2,78 @@
 
 @{
     ViewData["Title"] = "ExpenseGroup";
-   // Layout = "~/Views/Shared/_ContentNavbarLayout.cshtml";
+    // Layout = "~/Views/Shared/_ContentNavbarLayout.cshtml";
 }
+
 
 <form asp-action="Addgroup" asp-controller="Expense">
 
-    <div>
-        <input asp-for="GroupName" placeholder="GroupName" name="GroupName" class="form-control"/>
-        <label asp-for="GroupName" class="form-control"></label>
-        <span asp-validation-for="GroupName" class="text-danger"></span>
-     </div>
 
-    <div>
-        <input asp-for="Budget" placeholder="Budget" name="Budget" class="form-control" />
-        <label asp-for="Budget" class="form-control"></label>
-        <span asp-validation-for="Budget" class="text-danger"></span>
-    </div>
+    <div class="row">
 
-    <div class="form-floating form-floating-outline mb-4">
-        <label>Is Active?</label><br>
-        <input type="radio" asp-for="Active" value="true" id="Yes" checked /> <label for="Yes">Yes</label>
-        <input type="radio" asp-for="Active" value="false" id="No" /> <label for="No">No</label>
-    </div>
-
-
-    <button type="submit" value="Save" name="buttontype" class="btn btn-primary mx-2">Save</button>
-
-
-    @if (ViewBag.Message != null)
-    {
-        <div>
-            @ViewBag.Message;
+        <div class="col-md-3">
         </div>
-    }
+
+
+        <div class="col-md-6">
+            <div class="card" style="margin-top: 60px">
+                <div class="card-body">
+
+                    <div class="app-brand justify-content-center">
+                        <a href="/" class="app-brand-link gap-2">
+                            <center>
+                                <h2>
+                                    Expense Group
+                                </h2>
+                            </center>
+                        </a>
+                    </div>
+
+
+                    <div class="mb-3" style="margin-top:20px">
+                        <label asp-for="GroupName" class="form-label">GroupName</label>
+                        <input asp-for="GroupName" class="form-control" placeholder="GroupName" name="GroupName"  />
+                      
+                    </div>
+
+                    <div class="mb-3" style="margin-top:20px">
+                        <label asp-for="Budget" class="form-label"></label>
+                        <input asp-for="Budget" placeholder="Budget" name="Budget" class="form-control" />
+                      
+                      
+                    </div>
+
+                    <div class="mb-3" style="margin-top:20px">
+                        <label>Is Active?</label><br>
+                        <input type="radio" asp-for="Active" value="true" id="Yes" checked /> <label for="Yes">Yes</label>
+                        <input type="radio" asp-for="Active" value="false" id="No" /> <label for="No">No</label>
+                    </div>
+
+                    <div class="mb-3" style="margin-top:20px">
+                        <center>
+                            <button type="submit" value="Save" name="buttontype" class="btn btn-primary">Save</button>
+                        </center>
+                    </div>
+
+
+                   
+
+
+                    @if (ViewBag.Message != null)
+                    {
+                        <div>
+                            @ViewBag.Message;
+                        </div>
+                    }
+
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="col-md-3">
+        </div>
+    </div>
 
 </form>

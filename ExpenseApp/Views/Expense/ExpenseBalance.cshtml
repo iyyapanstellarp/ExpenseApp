@@ -2,30 +2,73 @@
 @using System.Data
 @using NonFactors.Mvc.Grid
 @{
-    ViewData["Title"] = "ExpenseMemberMaster";
+    ViewData["Title"] = "ExpenseBalance";
 }
 
-<h1>@ViewData["Title"]</h1>
-
 <form asp-action="GetReports" asp-controller="Expense" method="post">
-    <div class="form-floating form-floating-outline mb-4">
-        @{
-            // Get the groupid data from ViewData and create SelectListItems
-            var groupid = ((IEnumerable<ExpenseGroupModel>)ViewData["groupid"])
-            .Select(m => new SelectListItem
+
+
+    <div class="row">
+
+        <div class="col-md-3">
+        </div>
+
+
+        <div class="col-md-6">
+            <div class="card" style="margin-top: 60px">
+                <div class="card-body">
+                    <div class="app-brand justify-content-center">
+                        <a href="/" class="app-brand-link gap-2">
+                            <center>
+                                <h2>
+                                    ExpenseBalance
+                                </h2>
+                            </center>
+                        </a>
+                    </div>
+
+
+
+
+
+
+
+
+                    <div class="mb-3" style="margin-top:20px">
+                        <label asp-for="Groupname" class="form-label">GroupName</label>
+                        @{
+                            // Get the groupid data from ViewData and create SelectListItems
+                            var groupid = ((IEnumerable<ExpenseGroupModel>)ViewData["groupid"])
+                            .Select(m => new SelectListItem
             {
                 Value = m.GroupName, // Assuming GroupName is a string
                 Text = $"{m.GroupName}"
             });
-        }
+                        }
 
-        @Html.DropDownListFor(model => model.Groupname, groupid, "Select Group",
-                 new { @class = "form-control", @required = "required" })
-        <label asp-for="Groupname" class="control-label">Group Name</label>
-        <span asp-validation-for="Groupname" class="text-danger"></span>
-    </div>
+                        @Html.DropDownListFor(model => model.Groupname, groupid, "Select Group",
+                                 new { @class = "form-control", @required = "required" })
 
-    <button type="submit" class="btn btn-primary">Get</button>
+                    </div>
+
+
+
+                    <div class="mb-3" style="margin-top:20px">
+                        <center>
+
+
+                            <button type="submit" class="btn btn-primary">Get</button>
+                        </center>
+                    </div>
+
+</div>
+</div>
+</div>
+
+        <div class="col-md-3">
+        </div>
+
+</div>
 </form>
 
 @if (ViewData["balancetable"] != null)
