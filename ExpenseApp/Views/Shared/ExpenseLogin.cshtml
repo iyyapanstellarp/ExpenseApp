@@ -75,12 +75,12 @@
                             </div>
                             <div class="mb-3" style="margin-top:20px">
                                 <label asp-for="Password" class="form-label">Password</label>
-                                <input asp-for="Password" type="password" id="password" placeholder="Enter Password"  class="form-control"  />
+                                        <input asp-for="Password" type="password" id="registerPassword" placeholder="Enter Password" class="form-control" />
                                 <span asp-validation-for="Password" class="text-danger"></span>
                             </div>
                             <div class="mb-3" style="margin-top:20px">
                                 <label for="confirmpassword" class="form-label">Confirm Password</label>
-                                <input type="password" id="confirmpassword" placeholder="Confirm Password" class="form-control"
+                                        <input type="password" id="registerConfirmPassword" placeholder="Confirm Password" class="form-control"
                                        onblur="checkPasswordMatch()" />
                                 <span id="password-match-error" class="text-danger"></span>
                             </div>
@@ -123,8 +123,8 @@
 
 <script>
     function checkPasswordMatch() {
-        const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('confirmpassword').value;
+        const password = document.getElementById('registerPassword').value;
+        const confirmPassword = document.getElementById('registerConfirmPassword').value;
         const errorSpan = document.getElementById('password-match-error');
 
         if (password !== confirmPassword) {
