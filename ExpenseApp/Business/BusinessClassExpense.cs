@@ -23,15 +23,18 @@ namespace ExpenseApp.Business
             _configuration = configuration;
         }
 
+        // Method to get a list of group IDs for dropdown 
         public List<ExpenseGroupModel> GetGroupid()
         {
+            // LINQ query to retrieve group names from the database.
             var groupid = (
                 from pr in _billingContext.EXPgroupmaster
+                where pr.Active == true
                 select new ExpenseGroupModel
                 {
                     GroupName = pr.GroupName,
-                }).ToList();
-            return groupid;
+                }).ToList(); // Convert the result to a list.
+            return groupid; // Return the list of group names.
         }
 
         public static DataTable convertToDataTableMemberMaster(IEnumerable<ExpenseMemberMasterModel> entities)

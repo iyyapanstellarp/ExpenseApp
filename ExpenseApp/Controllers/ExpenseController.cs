@@ -17,52 +17,56 @@ namespace ExpenseApp.Controllers
     public class ExpenseController : Controller
     {
 
+        // Private field for the database context
         private ExpenseContext _billingContext;
+
+        // Private field for configuration settings
         private readonly IConfiguration _configuration;
 
+        // Constructor to initialize database context and configuration
         public ExpenseController(ExpenseContext billingContext, IConfiguration configuration)
-
         {
             _billingContext = billingContext;
             _configuration = configuration;
         }
 
-        public async Task<IActionResult> Addgroup (ExpenseGroupModel grpmodel)
+        // Action method to add or update an expense group
+        public async Task<IActionResult> Addgroup(ExpenseGroupModel grpmodel)
         {
-            string username = null;
+            string username = null; // Variable to hold the username
 
+            // Retrieve username from TempData if available
             if (TempData["UserName"] != null)
             {
-                username = TempData["UserName"].ToString();
-                TempData.Keep("UserName");
+                username = TempData["UserName"].ToString(); // Assign username from TempData
+                TempData.Keep("UserName"); // Keep TempData value for further use
             }
 
-            var checkgrp = await _billingContext.EXPgroupmaster.FirstOrDefaultAsync(x=>x.GroupName == grpmodel.GroupName);
-            if (checkgrp != null)
+            // Check if a group with the same name already exists in the database
+            var checkgrp = await _billingContext.EXPgroupmaster
+                                .FirstOrDefaultAsync(x => x.GroupName == grpmodel.GroupName);
+            if (checkgrp != null) // If group exists
             {
-                //checkgrp.GroupName = grpmodel.GroupName;
                 checkgrp.Active = grpmodel.Active;
-                checkgrp.ModifiedDate = DateTime.Now.ToString();
-                checkgrp.CreatedBy = username;
-               // checkgrp.GroupID = 1;
-
-                _billingContext.Entry(checkgrp).State = EntityState.Modified;
-
+                checkgrp.ModifiedDate = DateTime.Now.ToString(); // Set modified date
+                checkgrp.CreatedBy = username; // Set created by
+                _billingContext.Entry(checkgrp).State = EntityState.Modified; // Mark as modified
             }
-            else
+            else // If group doesn't exist
             {
-                grpmodel.CreatedDate = DateTime.Now.ToString();
-                grpmodel.ModifiedDate = DateTime.Now.ToString();
-                grpmodel.CreatedBy = username;
-                _billingContext.EXPgroupmaster.Add(grpmodel);
+                grpmodel.CreatedDate = DateTime.Now.ToString(); // Set created date
+                grpmodel.ModifiedDate = DateTime.Now.ToString(); // Set modified date
+                grpmodel.CreatedBy = username; // Set created by
+                _billingContext.EXPgroupmaster.Add(grpmodel); // Add new group
             }
-            ViewBag.Message = "Saved Successfully";
-            await _billingContext.SaveChangesAsync();
 
-            return View("ExpenseGroupMaster");
+            ViewBag.Message = "Saved Successfully"; // Message for successful save
+            await _billingContext.SaveChangesAsync(); // Save changes to the database
+
+            return View("ExpenseGroupMaster"); // Return to the ExpenseGroupMaster view
         }
 
-
+        // Action method to add or update an user details
         public async Task<IActionResult> updateuser(UserMaster usermodel)
         {
             var checkuser = await _billingContext.EXPusermaster.FirstOrDefaultAsync(x=>x.Username == usermodel.Username);
@@ -87,6 +91,7 @@ namespace ExpenseApp.Controllers
         }
 
 
+        // Action method to add or update an expense spent
         public async Task<IActionResult> addexpense(ExpenseModel expensemodel,string groupID)
         {
             string username = null;
@@ -97,8 +102,11 @@ namespace ExpenseApp.Controllers
                 TempData.Keep("UserName");
             }
 
+            // Create an instance of the business class to handle business logic.
+
             BusinessClassExpense business = new BusinessClassExpense(_billingContext, _configuration);
 
+            // Populate ViewData with group IDs to display in the view (e.g., dropdown).
             ViewData["groupid"] = business.GetGroupid();
 
             var checkexpense = await _billingContext.EXPexpense.FirstOrDefaultAsync(x=>x.ExpenseName == expensemodel.ExpenseName && x.GroupName == groupID);
@@ -135,7 +143,9 @@ namespace ExpenseApp.Controllers
 
         }
 
-        public async Task<IActionResult> AddExpensePop(ExpenseMasterModel model, ExpenseModel expensemodel,string expenseName, string type)
+
+        // Action method to add or update an expense type
+        public async Task<IActionResult> AddExpensePop(ExpenseMasterModel model, string expenseName, string type)
         {
 
             BusinessClassExpense business = new BusinessClassExpense(_billingContext, _configuration);
@@ -170,17 +180,21 @@ namespace ExpenseApp.Controllers
 
             ViewData["groupid"] = business.GetGroupid();
 
-            ViewData["Memberdata"] =  AdditionalMemberMasterFun();
+            ExpenseMemberMasterModel model = new ExpenseMemberMasterModel();
+
+           
+            string groupName = model.Groupname;
+            ViewData["Memberdata"] = AdditionalMemberMasterFun(groupName);
 
             return View();
         }
 
-        public async Task<DataTable> AdditionalMemberMasterFun()
+        public async Task<DataTable> AdditionalMemberMasterFun(string groupName)
         {
-
+           
             // Step 1: Perform the query
             var entities = _billingContext.EXPmembermaster
-                                  .Where(e => e.IsDelete == false)
+                                  .Where(e => e.IsDelete == false && e.Groupname == groupName)
                                   .ToList();
 
             // Step 2: Convert to DataTable
@@ -229,7 +243,7 @@ namespace ExpenseApp.Controllers
                 ViewBag.Message = "Saved Successfully";
                 await _billingContext.SaveChangesAsync();
 
-                var dataTable = await AdditionalMemberMasterFun();
+                var dataTable = await AdditionalMemberMasterFun(membermodel.Groupname);
 
                 // Store the DataTable in ViewData for access in the view
                 ViewData["Memberdata"] = dataTable;
@@ -247,7 +261,7 @@ namespace ExpenseApp.Controllers
 
                     ViewBag.Message = "Member deleted successfully";
 
-                    var dataTable1 = await AdditionalMemberMasterFun();
+                    var dataTable1 = await AdditionalMemberMasterFun(membermodel.Groupname);
 
                     // Store the DataTable in ViewData for access in the view
                     ViewData["Memberdata"] = dataTable1;
@@ -257,7 +271,7 @@ namespace ExpenseApp.Controllers
                 {
                     ViewBag.Message = "Member Not Found";
 
-                    var dataTable1 = await AdditionalMemberMasterFun();
+                    var dataTable1 = await AdditionalMemberMasterFun(membermodel.Groupname);
 
                     // Store the DataTable in ViewData for access in the view
                     ViewData["Memberdata"] = dataTable1;

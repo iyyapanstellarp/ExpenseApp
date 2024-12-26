@@ -64,18 +64,26 @@
 
 <!-- Expense Modal -->
 <div class="modal fade" id="modalCenter" tabindex="-1" aria-labelledby="modalCenterTitle" aria-hidden="true">
+    <!-- Modal container that centers the modal on the screen -->
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
+            <!-- Modal content container -->
             <div class="modal-header">
-                <h5 class="modal-title" id="modalCenterTitle">Expense Type</h5>
+                <!-- Header section of the modal -->
+                <h5 class="modal-title" id="modalCenterTitle">Expense Type</h5> <!-- Modal title -->
+                <!-- Close button to dismiss the modal -->
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <!-- Body section of the modal -->
+                <!-- Form to capture expense details -->
                 <form id="modalSearchForm" asp-controller="Expense" asp-action="AddExpensePop" method="post">
+                    <!-- Input field for Expense Name -->
                     <div class="col mb-3">
                         <label for="ExpenseNameMas">Expense Name</label>
                         <input type="text" class="form-control" id="ExpenseNameMas" name="ExpenseNameMas" placeholder="Expense Name" />
                     </div>
+                    <!-- Input field for Type -->
                     <div class="col mb-3">
                         <label for="Type">Type</label>
                         <input type="text" class="form-control" id="Type" name="Type" placeholder="Type" />
@@ -83,7 +91,10 @@
                 </form>
             </div>
             <div class="modal-footer">
+                <!-- Footer section of the modal -->
+                <!-- Button to close the modal -->
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <!-- Button to trigger save functionality -->
                 <button type="button" class="btn btn-primary" id="saveButton">Save</button>
             </div>
         </div>
@@ -91,56 +102,80 @@
 </div>
 
 <!-- Include jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery library for DOM manipulation and AJAX -->
 <!-- Modal Script for Expense -->
 <script>
     $(document).ready(function () {
+        // Ensures the DOM is fully loaded before executing the script
+
         $('#saveButton').on('click', function () {
-            // Ensure modal has finished rendering and input values are available
+            // Add click event handler to the Save button
+
             setTimeout(function () {
+                // Delay execution to ensure modal fields are accessible
+
                 var expenseName = $('#ExpenseNameMas').val().trim();
+                // Retrieve and trim the value of Expense Name input
+
                 var type = $('#Type').val().trim();
+                // Retrieve and trim the value of Type input
 
-                // Log the values for debugging
                 console.log('ExpenseNameMas:', expenseName);
-                console.log('Type:', type);
+                // Debugging: Log the Expense Name to the console
 
-                // Check if fields are empty
+                console.log('Type:', type);
+                // Debugging: Log the Type to the console
+
                 if (!expenseName || !type) {
+                    // Check if any input field is empty
                     alert('Please fill all the fields.');
-                    return;
+                    // Alert the user if fields are empty
+                    return; // Exit the function
                 }
 
-                // Perform AJAX request to save the data
+                // Perform an AJAX request to save data
                 $.ajax({
-                    type: 'POST',
+                    type: 'POST', // HTTP method
                     url: '@Url.Action("AddExpensePop", "Expense")',
+                    // URL for the server-side action
                     data: {
                         expenseName: expenseName,
+                        // Pass Expense Name as data
+
                         type: type
+                        // Pass Type as data
                     },
                     success: function (result) {
-                        // Set the value of the form input before closing the modal
-                        $('#ExpenseName').val(expenseName); // This sets the value of the ExpenseName input field in the form
+                        // Callback for successful AJAX request
+                        $('#ExpenseName').val(expenseName);
+                        // Update a form input outside the modal with the Expense Name
 
-                        // Close the modal after the value is updated
                         $('#modalCenter').modal('hide');
+                        // Close the modal after saving
 
-                        alert('Expense saved successfully!');
+                        alert('Expense system : Expense saved successfully!');
+                        // Inform the user of success
                     },
                     error: function (error) {
+                        // Callback for AJAX error
                         console.error('Error:', error);
+                        // Log error details to the console
+
                         alert('Error occurred while saving the expense.');
+                        // Inform the user of failure
                     }
                 });
-            }, 100);  // Delay the execution by 100ms to ensure modal inputs are ready
+            }, 100); // Delay execution to handle modal inputs
         });
 
-        // Clear input fields when the modal is shown
         $('#modalCenter').on('show.bs.modal', function () {
+            // Event triggered when the modal is shown
+
             $('#ExpenseNameMas').val('');
+            // Clear the Expense Name field
+
             $('#Type').val('');
+            // Clear the Type field
         });
     });
 </script>
