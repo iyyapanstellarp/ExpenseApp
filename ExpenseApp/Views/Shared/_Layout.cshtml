@@ -6,39 +6,68 @@
     <title>@ViewData["Title"] - ExpenseApp</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/ExpenseApp.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+        .navbar {
+            background-color: #343a40;
+        }
+
+        .navbar-nav {
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .nav-item {
+            flex: 1; /* Each item takes equal width */
+            text-align: center; /* Center the text */
+        }
+
+        .nav-link {
+            color: white;
+            padding: 1rem 0; /* Increase padding for spaciousness */
+            background-color: #495057; /* Add a background color for fully filled lines */
+            margin: 2px; /* Add small gaps between items */
+            display: contents;
+        }
+
+            .nav-link:hover {
+                background-color: #6c757d; /* Change color on hover */
+            }
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ExpenseApp</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Expense" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Expense" asp-action="ExpenseGroupMaster">ExpenseGroup</a>
+                            <a class="nav-link" asp-area="" asp-controller="Expense" asp-action="ExpenseGroupMaster">ExpenseGroup</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Expense" asp-action="ExpenseMemberMaster">GroupMember</a>
+                            <a class="nav-link" asp-area="" asp-controller="Expense" asp-action="ExpenseMemberMaster">GroupMember</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Expense" asp-action="Expense">Expense</a>
+                            <a class="nav-link" asp-area="" asp-controller="Expense" asp-action="Expense">Expense</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Expense" asp-action="ExpenseBalance">Balance</a>
+                            <a class="nav-link" asp-area="" asp-controller="Expense" asp-action="ExpenseBalance">Balance</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Expense" asp-action="UserMaster">UserProfile</a>
+                            <a class="nav-link" asp-area="" asp-controller="Expense" asp-action="UserMaster">UserProfile</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="ExpenseLogin" asp-action="Logout">Logout</a>
+                            <a class="nav-link" asp-area="" asp-controller="ExpenseLogin" asp-action="Logout">Logout</a>
                         </li>
                     </ul>
                 </div>
@@ -53,7 +82,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2024 - ExpenseApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2024 - StellarTechnologies - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
