@@ -37,18 +37,25 @@ namespace ExpenseApp.Business
             return groupid; // Return the list of group names.
         }
 
+
         public static DataTable convertToDataTableMemberMaster(IEnumerable<ExpenseMemberMasterModel> entities)
         {
+            // Create a new DataTable to hold the converted data
             var dataTable = new DataTable();
-            dataTable.Columns.Add("Groupname", typeof(string));
-            dataTable.Columns.Add("Membersname", typeof(string));
-            dataTable.Columns.Add("Contributionamaount", typeof(double));
 
+            // Add columns to the DataTable that correspond to the properties of the model
+            dataTable.Columns.Add("Groupname", typeof(string));  // Column for Groupname (string type)
+            dataTable.Columns.Add("Membersname", typeof(string));  // Column for Membersname (string type)
+            dataTable.Columns.Add("Contributionamaount", typeof(double));  // Column for Contributionamount (double type)
+
+            // Iterate through the collection of entities (ExpenseMemberMasterModel) and add each entity's data as a new row
             foreach (var entity in entities)
             {
-                dataTable.Rows.Add(entity.Groupname, entity.Membersname,entity.Contributionamaount);
+                // Add a row with values from the current entity
+                dataTable.Rows.Add(entity.Groupname, entity.Membersname, entity.Contributionamaount);
             }
 
+            // Return the populated DataTable
             return dataTable;
         }
 

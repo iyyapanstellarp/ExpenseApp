@@ -127,15 +127,13 @@
         const confirmPassword = document.getElementById('confirmpassword').value;
         const errorSpan = document.getElementById('password-match-error');
 
-
-        if (password === confirmPassword) {
-            errorSpan.textContent = ''; // Clear the error message
+        if (password !== confirmPassword) {
+            errorSpan.textContent = 'Password and Confirm Password do not match.';
         } else {
-            errorSpan.textContent = 'Password and Confirm Password do not match.'; // Show the error message
+            errorSpan.textContent = '';
         }
     }
 </script>
-
 
 
 

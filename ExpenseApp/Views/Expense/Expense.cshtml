@@ -241,116 +241,118 @@
 
 
 <script>
-    let suppressInputEvent = false;
+    let suppressInputEvent = false;  // Flag to temporarily suppress input event to avoid unintended filtering.
 
+    // Function to filter dropdown items based on user input
     function filterDropdown(event, inputId, dropdownId) {
-        if (suppressInputEvent) return; // Prevent filtering if input event is suppressed
+        if (suppressInputEvent) return;  // Prevent filtering if input event is suppressed
 
-        const input = document.getElementById(inputId);
-        const dropdown = document.getElementById(dropdownId);
-        const filter = input.value.toLowerCase();
-        const items = dropdown.querySelectorAll('li');
+        const input = document.getElementById(inputId);  // Get the input element
+        const dropdown = document.getElementById(dropdownId);  // Get the dropdown element
+        const filter = input.value.toLowerCase();  // Convert input to lowercase for case-insensitive comparison
+        const items = dropdown.querySelectorAll('li');  // Get all list items in the dropdown
 
         items.forEach(item => {
-            const text = item.textContent.toLowerCase();
-            item.style.display = text.includes(filter) ? '' : 'none';
+            const text = item.textContent.toLowerCase();  // Get text content of each item
+            item.style.display = text.includes(filter) ? '' : 'none';  // Show or hide based on the filter
         });
 
         if (filter) {
-            dropdown.style.display = 'block'; // Show dropdown when filtering
+            dropdown.style.display = 'block';  // Show dropdown if there is a filter
         }
     }
 
+    // Function to display dropdown when invoked
     function showDropdown(dropdownId) {
-        const dropdown = document.getElementById(dropdownId);
-        dropdown.style.display = 'block';
+        const dropdown = document.getElementById(dropdownId);  // Get dropdown element
+        dropdown.style.display = 'block';  // Show dropdown
     }
 
+    // Function to handle selection of a dropdown item
     function selectDropdownItem(inputId, hiddenId, text, value) {
-        const input = document.getElementById(inputId);
-        const hidden = document.getElementById(hiddenId);
-        const dropdown = document.getElementById('groupDropdown');
+        const input = document.getElementById(inputId);  // Get the input field
+        const hidden = document.getElementById(hiddenId);  // Get hidden input field to store value
+        const dropdown = document.getElementById('groupDropdown');  // Get the dropdown container
 
-        // Trim whitespace from the selected text
-        const trimmedText = text.trim();
+        input.value = text.trim();  // Set the selected text in the input
+        hidden.value = value;  // Set the associated value in the hidden input
 
-        // Set the selected value in the input and hidden input
-        input.value = trimmedText;
-        hidden.value = value;
+        dropdown.style.display = 'none';  // Hide dropdown after selection
 
-        // Hide the dropdown after selection
-        dropdown.style.display = 'none';
+        suppressInputEvent = true;  // Temporarily suppress input event
 
-        // Set the flag to suppress the input event momentarily
-        suppressInputEvent = true;
-
-        // Remove suppression after a short delay to allow normal input behavior again
+        // Reset suppression after a short delay
         setTimeout(() => {
             suppressInputEvent = false;
         }, 200);
     }
 
+    // Initialize dropdown behavior when the page is ready
     document.addEventListener('DOMContentLoaded', () => {
-        const input = document.getElementById('groupDropdownInput');
-        const dropdown = document.getElementById('groupDropdown');
+        const input = document.getElementById('groupDropdownInput');  // Get the input field
+        const dropdown = document.getElementById('groupDropdown');  // Get the dropdown element
 
-        let highlightedIndex = -1;
+        let highlightedIndex = -1;  // Track the index of the highlighted item
 
+        // Function to get visible dropdown items
         function getVisibleItems() {
             return Array.from(dropdown.querySelectorAll('li')).filter(item => item.style.display !== 'none');
         }
 
+        // Handle input event to filter dropdown items
         input.addEventListener('input', (event) => {
             filterDropdown(event, 'groupDropdownInput', 'groupDropdown');
-            highlightedIndex = -1; // Reset highlight when input changes
+            highlightedIndex = -1;  // Reset highlight when input changes
         });
 
+        // Handle keyboard events for navigation and selection
         input.addEventListener('keydown', (event) => {
             const visibleItems = getVisibleItems();
 
             switch (event.key) {
-                case 'ArrowDown':
+                case 'ArrowDown':  // Move highlight down
                     if (highlightedIndex < visibleItems.length - 1) {
                         highlightedIndex++;
-                        updateHighlight(visibleItems);
-                        event.preventDefault(); // Prevent default behavior
+                        updateHighlight(visibleItems);  // Update highlight color
+                        event.preventDefault();
                     }
                     break;
-                case 'ArrowUp':
+                case 'ArrowUp':  // Move highlight up
                     if (highlightedIndex > 0) {
                         highlightedIndex--;
                         updateHighlight(visibleItems);
-                        event.preventDefault(); // Prevent default behavior
+                        event.preventDefault();
                     }
                     break;
-                case 'Enter':
+                case 'Enter':  // Select highlighted item
                     if (highlightedIndex >= 0) {
                         const item = visibleItems[highlightedIndex];
                         selectDropdownItem('groupDropdownInput', 'groupID', item.textContent, item.getAttribute('data-value'));
                         highlightedIndex = -1;
-                        event.preventDefault(); // Prevent default behavior
+                        event.preventDefault();
                     }
                     break;
-                case 'Escape':
-                    dropdown.style.display = 'none'; // Close dropdown on escape
+                case 'Escape':  // Close dropdown on escape key
+                    dropdown.style.display = 'none';
                     highlightedIndex = -1;
                     break;
             }
         });
 
+        // Function to update highlight color of selected item
         function updateHighlight(visibleItems) {
             visibleItems.forEach((item, index) => {
-                item.style.backgroundColor = (index === highlightedIndex) ? '#000000' : 'white';
-                item.style.color = (index === highlightedIndex) ? 'white' : 'black'; // Ensure text color contrasts with background
+                item.style.backgroundColor = (index === highlightedIndex) ? '#000000' : 'white';  // Highlight selected item
+                item.style.color = (index === highlightedIndex) ? 'white' : 'black';  // Change text color for contrast
             });
-            visibleItems[highlightedIndex]?.scrollIntoView({ block: 'nearest' });
+            visibleItems[highlightedIndex]?.scrollIntoView({ block: 'nearest' });  // Scroll to the highlighted item
         }
 
-        // Click event to close dropdown when clicking outside
+        // Close dropdown if clicking outside of it
         document.addEventListener('click', (event) => {
             const target = event.target;
             if (!dropdown.contains(target) && target !== input) {
-                dropdown.style.display = 'none';
+                dropdown.style.display = 'none';  // Hide dropdown if click is outside
             }
         });
     });

@@ -147,7 +147,7 @@ namespace ExpenseApp.Controllers
         // Action method to add or update an expense type
         public async Task<IActionResult> AddExpensePop(ExpenseMasterModel model, string expenseName, string type)
         {
-
+            // Create an instance of the business class to handle business logic.
             BusinessClassExpense business = new BusinessClassExpense(_billingContext, _configuration);
 
             ViewData["groupid"] = business.GetGroupid();
@@ -176,6 +176,7 @@ namespace ExpenseApp.Controllers
 
         public IActionResult ExpenseMemberMaster()
         {
+            // Create an instance of the business class to handle business logic.
             BusinessClassExpense business = new BusinessClassExpense(_billingContext, _configuration);
 
             ViewData["groupid"] = business.GetGroupid();
@@ -204,6 +205,7 @@ namespace ExpenseApp.Controllers
         }
 
 
+        // Action method to add or update an members
         public async Task<IActionResult> Addmember(ExpenseMemberMasterModel membermodel,string buttonType)
         {
             string username = null;
@@ -214,6 +216,7 @@ namespace ExpenseApp.Controllers
                 TempData.Keep("UserName");
             }
 
+            // Create an instance of the business class to handle business logic.
             BusinessClassExpense business = new BusinessClassExpense(_billingContext, _configuration);
 
             ViewData["groupid"] = business.GetGroupid();
