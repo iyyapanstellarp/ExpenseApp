@@ -1,4 +1,5 @@
-﻿using System.Data.SqlTypes;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.SqlTypes;
 
 namespace ExpenseApp.Models
 {
@@ -23,6 +24,8 @@ namespace ExpenseApp.Models
         public string GroupName { get => groupName; set => groupName = value; }
         public double Budget { get => budget; set => budget = value; }
         public bool Active { get => active; set => active = value; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int GroupID { get => groupID; set => groupID = value; }
     }
 }

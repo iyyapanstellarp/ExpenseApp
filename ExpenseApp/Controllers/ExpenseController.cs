@@ -49,9 +49,11 @@ namespace ExpenseApp.Controllers
             if (checkgrp != null) // If group exists
             {
                 checkgrp.Active = grpmodel.Active;
+                checkgrp.Budget = grpmodel.Budget;
                 checkgrp.ModifiedDate = DateTime.Now.ToString(); // Set modified date
                 checkgrp.CreatedBy = username; // Set created by
-                _billingContext.Entry(checkgrp).State = EntityState.Modified; // Mark as modified
+                _billingContext.Entry(checkgrp).Property(g => g.GroupID).IsModified = false;
+               // _billingContext.Entry(checkgrp).State = EntityState.Modified; // Mark as modified
             }
             else // If group doesn't exist
             {
@@ -62,6 +64,9 @@ namespace ExpenseApp.Controllers
             }
 
             ViewBag.Message = "Saved Successfully"; // Message for successful save
+            
+          
+
             await _billingContext.SaveChangesAsync(); // Save changes to the database
 
             return View("ExpenseGroupMaster"); // Return to the ExpenseGroupMaster view
@@ -227,30 +232,51 @@ namespace ExpenseApp.Controllers
 
                 var checkmember = await _billingContext.EXPmembermaster.FirstOrDefaultAsync(x => x.Groupname == membermodel.Groupname && x.Membersname == membermodel.Membersname);
 
-                if (checkmember != null)
+                var TotalContrbu = _billingContext.EXPmembermaster.Where(x => x.Groupname == membermodel.Groupname)
+                                                            .GroupBy(x => x.Groupname)
+                                                             .Select(g => new
+                                                             {
+                                                                 GroupName = g.Key,                       // GroupName
+                                                                 TotalAmount = g.Sum(c => c.Contributionamaount) // Sum of ContributionAmount
+                                                             }).FirstOrDefault();
+
+                var TotalBudget = _billingContext.EXPgroupmaster.Where(x => x.GroupName == membermodel.Groupname)
+                                                         .Select(x => x.Budget).FirstOrDefault();
+
+
+                if (TotalContrbu.TotalAmount < TotalBudget)
                 {
-                    checkmember.Contributionamaount = membermodel.Contributionamaount;
-                    checkmember.ModifiedDate = DateTime.Now.ToString();
-                    checkmember.CreatedBy = username;
 
-                    _billingContext.Entry(checkmember).State = EntityState.Modified;
+                    if (checkmember != null)
+                    {
+                        checkmember.Contributionamaount = membermodel.Contributionamaount;
+                        checkmember.ModifiedDate = DateTime.Now.ToString();
+                        checkmember.CreatedBy = username;
 
+                        _billingContext.Entry(checkmember).State = EntityState.Modified;
+
+                    }
+                    else
+                    {
+
+                        membermodel.CreatedDate = DateTime.Now.ToString();
+                        membermodel.ModifiedDate = DateTime.Now.ToString();
+                        membermodel.CreatedBy = username;
+                        _billingContext.EXPmembermaster.Add(membermodel);
+                    }
+                    ViewBag.Message = "Saved Successfully";
+                    await _billingContext.SaveChangesAsync();
+
+                    var dataTable = await AdditionalMemberMasterFun(membermodel.Groupname);
+
+
+                    // Store the DataTable in ViewData for access in the view
+                    ViewData["Memberdata"] = dataTable;
                 }
                 else
                 {
-
-                    membermodel.CreatedDate = DateTime.Now.ToString();
-                    membermodel.ModifiedDate = DateTime.Now.ToString();
-                    membermodel.CreatedBy = username;
-                    _billingContext.EXPmembermaster.Add(membermodel);
+                    ViewBag.Message = "Contribution Sum Goes Greater than Budget amount";
                 }
-                ViewBag.Message = "Saved Successfully";
-                await _billingContext.SaveChangesAsync();
-
-                var dataTable = await AdditionalMemberMasterFun(membermodel.Groupname);
-
-                // Store the DataTable in ViewData for access in the view
-                ViewData["Memberdata"] = dataTable;
             }
 
             if(buttonType == "Delete")
@@ -340,7 +366,7 @@ namespace ExpenseApp.Controllers
             ViewData["groupid"] = business.GetGroupid();
 
             // Define the SQL query with a parameter placeholder
-            var reportQuery = "select Membersname, Contributionamaount, '' as percentage, '' as balance " +
+            var reportQuery = "select  Membersname,  cast(Contributionamaount as decimal(10,2)) Contributionamaount, dbo.GetPercentage(Groupname,Contributionamaount,1) as percentage,  dbo.GetPercentage(Groupname,Contributionamaount,0) as balance   " +
                               "from EXPmembermaster where Groupname = @GroupName";
 
             if (string.IsNullOrEmpty(model.GroupName))
@@ -351,9 +377,9 @@ namespace ExpenseApp.Controllers
 
             // Use parameterized query to prevent SQL injection
             var query = BusinessClassExpense.DataTable(_billingContext, reportQuery, new Dictionary<string, object>
-    {
-        { "@GroupName", model.GroupName }
-    });
+            {
+                { "@GroupName", model.GroupName }
+            });
 
             if (query.Rows.Count == 0)
             {

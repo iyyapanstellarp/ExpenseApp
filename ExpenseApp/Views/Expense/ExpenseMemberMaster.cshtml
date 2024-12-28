@@ -32,7 +32,7 @@
 
 
                     <div class="mb-3" style="margin-top:20px">
-                       
+                        <label asp-for="Groupname" class="control-label">Group Name</label>
                         @{
                             var groupid = ((IEnumerable<ExpenseGroupModel>)ViewData["groupid"])
                             .Select(m => new SelectListItem
@@ -45,12 +45,6 @@
                         @Html.DropDownListFor(model => model.Groupname, groupid, "Select Group", new { @class = "form-control", @required = "required" })
 
 
-                    </div>
-                        <div class="mb-3" style="margin-top:20px">
-                        <label asp-for="Groupname" class="control-label">Group Name</label>
-                        <input asp-for="Groupname" class="form-control" placeholder="GroupName" name="Groupname" />
-
-                    </div>
 
 
                     <div class="mb-3" style="margin-top:20px">

@@ -27,16 +27,6 @@
                             </center>
                         </a>
                     </div>
-
-                
-
-                    <div class="mb-3" style="margin-top:20px">
-                        <label asp-for="GroupName" class="form-label">GroupName</label>
-                        <input asp-for="GroupName" class="form-control" placeholder="GroupName" name="GroupName" />
-
-                    </div>
-
-
                     <div class="mb-3" style="margin-top: 20px">
                         <label asp-for="ExpenseName" class="form-label">Expense Name</label>
                         <input asp-for="ExpenseName" id="ExpenseName" placeholder="Expense Name" class="form-control" readonly />
@@ -47,8 +37,6 @@
 
                     </div>
 
-                  
-            
                     <div class="mb-3" style="margin-top: 20px">
 
                         <label asp-for="GroupName" class="form-label">GroupName</label>
@@ -86,23 +74,23 @@
         <span asp-validation-for="Spent" class="text-danger"></span>
     </div>
 
-                    <div class="mb-3" style="margin-top:20px">
-                        <center>
-                            <button type="submit" class="btn btn-primary mt-3">Save</button>
-                        </center>
-                    </div>
+    <div class="mb-3" style="margin-top:20px">
+        <center>
+            <button type="submit" class="btn btn-primary mt-3">Save</button>
+        </center>
+    </div>
 
 
                    
 
-                    @if (ViewBag.Message != null)
-                    {
-                        <div class="alert alert-info mt-3">
-                            @ViewBag.Message
-                        </div>
-                    }
+    @if (ViewBag.Message != null)
+    {
+        <div class="alert alert-info mt-3">
+            @ViewBag.Message
+        </div>
+    }
 
-                </div>
+
 </div>
 </div>
         <div class="col-md-3">

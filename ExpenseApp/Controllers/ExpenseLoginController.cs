@@ -20,7 +20,6 @@ namespace ExpenseApp.Controllers
             _configuration = configuration;
         }
 
-
         public IActionResult Index()
         {
             return View();
